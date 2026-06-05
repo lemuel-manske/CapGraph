@@ -1,0 +1,6 @@
+[project]
+name = "capgraph"
+version = "0.0.0"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []

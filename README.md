@@ -1,4 +1,4 @@
-# capgraph
+# CapGraph
 
 This project aims to explore the hability to enable LLM agents to navigate and utilize a graph of capabilities in the form of tools,
 enabling them to solve problems by navigating a graph of capabilities instead of blowing the context window with all tools at once, thus
