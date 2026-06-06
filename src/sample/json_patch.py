@@ -41,6 +41,82 @@ class CopyOperation(TypedDict):
 type PatchOperation = AddOperation | ReplaceOperation | RemoveOperation | MoveOperation | CopyOperation
 
 
+def patches_equal(patches1: list[PatchOperation], patches2: list[PatchOperation]) -> bool:
+    """
+    Compares two lists of patch operations for equality, ignoring order.
+    """
+
+    def normalize(patches: list[PatchOperation]) -> list[PatchOperation]:
+        return sorted(patches, key=lambda p: (p['op'], p['path']))
+
+    return normalize(patches1) == normalize(patches2)
+
+
+def diff(doc: dict, modified: dict) -> list[PatchOperation]:
+    """
+    Computes the list of patch operations required to transform doc into modified.
+    """
+
+    ops: list[PatchOperation] = []
+
+    def _escape(token: str) -> str:
+        return token.replace("~", "~0").replace("/", "~1")
+
+    def walk(old: JsonValue, new: JsonValue, path: str) -> None:
+        if isinstance(old, dict) and isinstance(new, dict):
+            old_keys = set(old)
+            new_keys = set(new)
+
+            for key in sorted(old_keys - new_keys):
+                ops.append(
+                    RemoveOperation(
+                        op="remove",
+                        path=f"{path}/{_escape(key)}" if path else f"/{_escape(key)}",
+                    )
+                )
+
+            for key in sorted(new_keys - old_keys):
+                ops.append(
+                    AddOperation(
+                        op="add",
+                        path=f"{path}/{_escape(key)}" if path else f"/{_escape(key)}",
+                        value=deepcopy(new[key]),
+                    )
+                )
+
+            for key in sorted(old_keys & new_keys):
+                child_path = (
+                    f"{path}/{_escape(key)}" if path else f"/{_escape(key)}"
+                )
+                walk(old[key], new[key], child_path)
+
+            return
+
+        if isinstance(old, list) and isinstance(new, list):
+            if old != new:
+                ops.append(
+                    ReplaceOperation(
+                        op="replace",
+                        path=path or "",
+                        value=deepcopy(new),
+                    )
+                )
+            return
+
+        if old != new:
+            ops.append(
+                ReplaceOperation(
+                    op="replace",
+                    path=path or "",
+                    value=deepcopy(new),
+                )
+            )
+
+    walk(doc, modified, "")
+
+    return ops
+
+
 def apply_patches(document: dict, patches: list[PatchOperation]) -> dict:
     """
     Applies the given list of patch operations to the document and returns the modified document.
