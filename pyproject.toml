@@ -1,6 +1,29 @@
 [project]
-name = "capgraph"
+name = "CapGraph"
 version = "0.0.0"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "jsonschema>=4.26.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "--strict-markers --disable-warnings"
+asyncio_mode = "auto"
+log_cli = true
+log_cli_level = "INFO"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "ruff>=0.15.16",
+]
