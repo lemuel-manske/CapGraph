@@ -4,13 +4,6 @@ from src.engine.api import Capability
 from src.sample.tools import DEFINITIONS
 
 
-# form (node)
-# field (node)
-# add_field (edge) - is a capability
-
-# root - add_form -> form
-# form - add_field -> field
-
 class Schematics:
 
     def __init__(self, g: nx.DiGraph | None = None, curr_node: str = 'root') -> None:
