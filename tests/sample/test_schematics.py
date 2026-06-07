@@ -2,8 +2,12 @@ from src.sample.schematics import root
 
 
 def test_explore():
-    s = root.explore('form')
+    form = root.explore('form')
 
-    assert s.capabilities() == [
+    assert form.capabilities() == [
         'add_field',
     ]
+
+    field = form.explore('field')
+
+    assert field.capabilities() == []
