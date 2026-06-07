@@ -1,0 +1,11 @@
+from .add_field import DEFINITION as ADD_FIELD_DEFINITION
+from .add_form import DEFINITION as ADD_FORM_DEFINITION
+
+DEFINITIONS = [
+    ADD_FIELD_DEFINITION,
+    ADD_FORM_DEFINITION,
+]
+
+__all__ = [
+    "DEFINITIONS",
+]

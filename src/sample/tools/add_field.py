@@ -26,7 +26,7 @@ class FieldComponent(BaseModel):
     )
 
 
-def _serialize(src: FieldComponent) -> dict:
+def serialize(src: FieldComponent) -> dict:
     def serialize_type(ftype: str) -> str:
         types = {
             "text": "string",
@@ -58,17 +58,15 @@ def _fn(
     if node is None:
         raise ValueError(f"Node with id {node_id} not found in schematics tree.")
 
-    ops: list[PatchOperation] = node.add(node_id, _serialize(field))
+    ops: list[PatchOperation] = node.add(node_id, serialize(field))
 
-    state.append(ops)
-    return state
+    return state.append(ops)
 
 
-def define() -> Capability:
-    return Capability(
-        cap_id="add_field",
-        needs=["form"],
-        produces=["field"],
-        description="Adds a new field to a form.",
-        fn=_fn,
-    )
+DEFINITION = Capability(
+    name="add_field",
+    needs=["form"],
+    produces=["field"],
+    description="Adds a new field to a form.",
+    fn=_fn,
+)

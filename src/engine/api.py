@@ -23,11 +23,11 @@ class State:
     The engine state.
     """
 
-    def __init__(self):
-        self.operations = []
+    def __init__(self, operations: Sequence[Operation] | None = None) -> None:
+        self.operations = operations or []
 
-    def append(self, operations: Sequence[Operation]):
-        self.operations.append(operations)
+    def append(self, operations: Sequence[Operation]) -> State:
+        return State([*self.operations, *operations])
 
     def get(self, key: str, default=None):
         return getattr(self, key, default)
@@ -39,7 +39,7 @@ class Capability:
     Defines an engine capability.
     """
 
-    cap_id: str
+    name: str
     description: str
 
     needs: list[str]
