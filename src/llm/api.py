@@ -67,7 +67,7 @@ class TokenUsage:
         )
 
 
-@dataclass
+@dataclass(frozen=True)
 class ChatResponse:
     """
     Represents the response from the chat model.
@@ -90,9 +90,12 @@ class ToolValidationError(Exception):
         self.tool_name = tool_name
         self.errors = errors
         self.attempts = attempts
+
         error_summary = "; ".join(errors[:3])
+
         if len(errors) > 3:
             error_summary += f" ... and {len(errors) - 3} more errors"
+
         super().__init__(
             f"Tool '{tool_name}' validation failed after {attempts} attempts: {error_summary}"
         )
