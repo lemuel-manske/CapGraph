@@ -8,15 +8,13 @@ from typing import Any
 from jsonschema import ValidationError as JsonSchemaValidationError
 from jsonschema import validate
 
-from .api import ToolDefinition
-
 logger = logging.getLogger(__name__)
 
 
 def validate_tool_arguments(
     tool_name: str,
     arguments_json: str,
-    tool_definitions: list[ToolDefinition],
+    tool_definitions: list[dict],
 ) -> tuple[bool, dict[str, Any] | None, list[str]]:
     """
     Validate tool arguments against the tool's parameter schema.

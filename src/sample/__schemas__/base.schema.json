@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "base",
+  "description": "A base schema for all components.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "The unique identifier of the component."
+    },
+    "children": {
+      "type": "array",
+      "description": "Child components.",
+      "items": {
+        "$ref": "base"
+      }
+    }
+  },
+  "required": ["id"]
+}

@@ -2,8 +2,12 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "form",
   "description": "A schema representing a form component.",
+  "allOf": [{ "$ref": "base" }],
   "type": "object",
   "properties": {
+    "componentType": {
+      "const": "form"
+    },
     "title": {
       "type": "string",
       "description": "The title of the form."

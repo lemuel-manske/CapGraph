@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from src.sample.json_patch import PatchOperation
+from src.utils.json_patch import PatchOperation
 
 
 class SchematicsTree(dict):
@@ -16,7 +16,8 @@ class SchematicsTree(dict):
 
     def add(self, node_id: str, new: dict) -> list[PatchOperation]:
         """
-        Add a new node with the given ID and data to the tree, and return a list of patch operations to apply the change.
+        Add a new node with the given ID and data to the tree,
+        and return a list of patch operations to apply the change.
         """
 
         parent = self.at(node_id)
@@ -31,11 +32,15 @@ class SchematicsTree(dict):
 
         path = self.path_to(node_id)
 
-        assert path, f"Failed to find path to parent node with id {node_id}."
+        assert path is not None, f"Failed to find path to parent node with id {node_id}."
+
+        new[self._id_key] = self.next_id()
+
+        children_path = f"{path}/{self._gen_key}/-" if path else f"/{self._gen_key}/-"
 
         op: PatchOperation = {
             "op": "add",
-            "path": path,
+            "path": children_path,
             "value": new,
         }
 
@@ -70,13 +75,37 @@ class SchematicsTree(dict):
         Return the JSON pointer path to the component with the given ID.
         """
 
-        if self.get("code") == target_id:
+        if self.get(self._id_key) == target_id:
             return ""
 
         for i, child in enumerate(self.children_iter()):
             child_path = child.path_to(target_id)
 
             if child_path is not None:
-                return f"/children/{i}{child_path}"
+                return f"/{self._gen_key}/{i}{child_path}"
 
         return None
+
+    def next_id(self) -> str:
+        """
+        Generate a new unique ID for a node in the tree.
+        """
+
+        existing_ids = set()
+
+        def collect_ids(node: SchematicsTree):
+            existing_ids.add(node.get(self._id_key))
+
+            for child in node.children_iter():
+                collect_ids(child)
+
+        collect_ids(self)
+
+        i = 1
+        while True:
+            new_id = f"node_{i}"
+
+            if new_id not in existing_ids:
+                return new_id
+
+            i += 1

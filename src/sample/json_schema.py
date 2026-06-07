@@ -213,7 +213,6 @@ _REGISTRY = _build_registry()
 _SCHEMAS_CACHE = {}
 
 
-
 def get_schema(name: str) -> JsonSchema:
     """
     Return the JSON schema dict for the given name.

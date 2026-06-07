@@ -5,6 +5,7 @@ def test_field_validates_no_errors():
     schema = get_schema("field")
 
     data = {
+        "id": 1,
         "name": "test",
         "type": "string",
     }
@@ -18,6 +19,7 @@ def test_field_validates_with_errors():
     schema = get_schema("field")
 
     data = {
+        "id": 1,
         "name": "test",
         "type": "invalid_type",
     }

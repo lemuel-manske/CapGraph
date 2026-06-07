@@ -1,0 +1,25 @@
+{
+  "id": 1,
+  "children": [
+    {
+      "id": 2,
+      "title": "User Registration",
+      "fields": [
+        {
+          "id": 3,
+          "name": "username",
+          "type": "string",
+          "required": true,
+          "description": "The user's username."
+        },
+        {
+          "id": 4,
+          "name": "email",
+          "type": "string",
+          "required": true,
+          "description": "The user's email address."
+        }
+      ]
+    }
+  ]
+}

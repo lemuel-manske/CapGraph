@@ -5,7 +5,7 @@ from typing import Any
 
 from openai import OpenAI
 
-from .api import Chat, ChatMessage, ChatResponse, TokenUsage, ToolCall, ToolChoice, ToolDefinition
+from .api import Chat, ChatMessage, ChatResponse, TokenUsage, ToolCall, ToolChoice
 
 _BASE_URL = "http://localhost:11434/v1/"
 
@@ -23,7 +23,7 @@ class OllamaChat(Chat):
     def send_message(
         self,
         messages: list[ChatMessage],
-        tools: list[ToolDefinition] | None = None,
+        tools: list[dict] | None = None,
         tool_choice: ToolChoice = "auto",
     ) -> ChatResponse:
         kwargs: dict[str, Any] = {

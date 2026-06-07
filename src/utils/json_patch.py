@@ -1,12 +1,10 @@
 from copy import deepcopy
 from typing import Literal, TypedDict
 
-
 type JsonValue = dict | list | str | int | float | bool | None
 
 
-class JsonPatchException(Exception):
-    ...
+class JsonPatchException(Exception): ...
 
 
 class AddOperation(TypedDict):
@@ -38,7 +36,9 @@ class CopyOperation(TypedDict):
     from_path: str
 
 
-type PatchOperation = AddOperation | ReplaceOperation | RemoveOperation | MoveOperation | CopyOperation
+type PatchOperation = (
+    AddOperation | ReplaceOperation | RemoveOperation | MoveOperation | CopyOperation
+)
 
 
 def patches_equal(patches1: list[PatchOperation], patches2: list[PatchOperation]) -> bool:
@@ -47,7 +47,7 @@ def patches_equal(patches1: list[PatchOperation], patches2: list[PatchOperation]
     """
 
     def normalize(patches: list[PatchOperation]) -> list[PatchOperation]:
-        return sorted(patches, key=lambda p: (p['op'], p['path']))
+        return sorted(patches, key=lambda p: (p["op"], p["path"]))
 
     return normalize(patches1) == normalize(patches2)
 
@@ -85,9 +85,7 @@ def diff(doc: dict, modified: dict) -> list[PatchOperation]:
                 )
 
             for key in sorted(old_keys & new_keys):
-                child_path = (
-                    f"{path}/{_escape(key)}" if path else f"/{_escape(key)}"
-                )
+                child_path = f"{path}/{_escape(key)}" if path else f"/{_escape(key)}"
                 walk(old[key], new[key], child_path)
 
             return
@@ -142,37 +140,37 @@ class JsonPatch:
         doc = deepcopy(document)
 
         for patch in self.patches:
-            op = patch['op']
-            path = patch['path']
+            op = patch["op"]
+            path = patch["path"]
 
             if not path and op in ("add", "replace"):
-                assert 'value' in patch, "Missing value for add/replace operation"
+                assert "value" in patch, "Missing value for add/replace operation"
 
-                doc = deepcopy(patch['value'])
+                doc = deepcopy(patch["value"])
                 continue
 
             if op == "add":
-                assert 'value' in patch, "Missing value for add operation"
-                self._add(doc, path, patch['value'])
+                assert "value" in patch, "Missing value for add operation"
+                self._add(doc, path, patch["value"])
 
             elif op == "replace":
-                assert 'value' in patch, "Missing value for replace operation"
-                self._replace(doc, path, patch['value'])
+                assert "value" in patch, "Missing value for replace operation"
+                self._replace(doc, path, patch["value"])
 
             elif op == "remove":
                 self._remove(doc, path)
 
             elif op == "test":
-                assert 'value' in patch, "Missing value for test operation"
-                self._test(doc, path, patch['value'])
+                assert "value" in patch, "Missing value for test operation"
+                self._test(doc, path, patch["value"])
 
             elif op == "copy":
-                assert 'from_path' in patch, "Missing from_path for copy operation"
-                self._copy(doc, patch['from_path'], path)
+                assert "from_path" in patch, "Missing from_path for copy operation"
+                self._copy(doc, patch["from_path"], path)
 
             elif op == "move":
-                assert 'from_path' in patch, "Missing from_path for move operation"
-                self._move(doc, patch['from_path'], path)
+                assert "from_path" in patch, "Missing from_path for move operation"
+                self._move(doc, patch["from_path"], path)
 
             else:
                 raise JsonPatchException(f"Unsupported op: {op}")

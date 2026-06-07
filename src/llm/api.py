@@ -16,25 +16,6 @@ class ChatMessage(TypedDict):
     tool_call_id: NotRequired[str]
 
 
-class FunctionDefinition(TypedDict):
-    """
-    Represents the definition of a function that can be called as a tool by the assistant.
-    """
-
-    name: str
-    description: str
-    parameters: dict[str, Any]
-
-
-class ToolDefinition(TypedDict):
-    """
-    Represents a tool that the assistant can call, defined by a function signature.
-    """
-
-    tool_type: Literal["function"]
-    function: FunctionDefinition
-
-
 @dataclass(frozen=True)
 class ToolCall:
     """
@@ -45,14 +26,11 @@ class ToolCall:
     function_name: str
     arguments: str
 
-    def is_done(self) -> bool:
-        return self.function_name == "done"
-
 
 @dataclass(frozen=True)
 class TokenUsage:
     """
-    Represents the token usage for a single chat response, including prompt tokens, completion tokens, and total tokens.
+    Represents the token usage for a single chat response.
     """
 
     prompt_tokens: int = 0
@@ -110,7 +88,7 @@ class Chat(ABC):
     def send_message(
         self,
         messages: list[ChatMessage],
-        tools: list[ToolDefinition] | None = None,
+        tools: list[dict] | None = None,
         tool_choice: ToolChoice = "auto",
     ) -> ChatResponse:
         """

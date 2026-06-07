@@ -1,25 +1,24 @@
 import networkx as nx
 
-from src.engine.api import Capability
+from src.engine.api import Capability, CapGraph
 from src.sample.tools import DEFINITIONS
 
 
-class Schematics:
-
-    def __init__(self, g: nx.DiGraph | None = None, curr_node: str = 'root') -> None:
+class Schematics(CapGraph):
+    def __init__(self, g: nx.DiGraph | None = None, curr_node: str = "root") -> None:
         def root():
             root = nx.DiGraph()
-            root.add_node('root')
+            root.add_node("root")
             return root
 
         self._g = g or root()
         self._curr_node = curr_node
 
-    def explore(self, node: str) -> Schematics:
-        '''
+    def explore(self, capability: str) -> CapGraph:
+        """
         Explores the current schematics, and navigates to the target node, exposing a new set
         of capabilities.
-        '''
+        """
 
         explored = nx.DiGraph()
 
@@ -30,18 +29,18 @@ class Schematics:
                 explored.add_edge(n, to_node, **d)
                 dfs(to_node)
 
-        dfs(node)
-        return Schematics(explored, node)
+        dfs(capability)
+        return Schematics(explored, capability)
 
-    def capabilities(self) -> list[str]:
-        '''
+    def capabilities(self) -> list[Capability]:
+        """
         Returns only the capabilities that expand from the current node.
-        '''
+        """
 
-        return [d['capability'] for _, _, d in self._g.edges(self._curr_node, data=True)]
+        return [d["capability"] for _, _, d in self._g.edges(self._curr_node, data=True)]
 
     def _add_edge(self, from_node: str, to_node: str, capability: Capability) -> None:
-        self._g.add_edge(from_node, to_node, capability=capability.name)
+        self._g.add_edge(from_node, to_node, capability=capability)
 
     def _add_node(self, s: str) -> None:
         self._g.add_node(s)
