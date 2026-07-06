@@ -12,10 +12,17 @@ from .add_field import serialize as serialize_field
 
 
 class FormComponent(BaseModel):
-    title: str = Field(description="The title of the form.")
+    title: str = Field(
+        description="The title of the form.",
+        min_length=1,
+        max_length=100,
+        pattern=r"^[a-zA-Z0-9\s]+$",
+    )
 
     fields: list[FieldComponent] = Field(
-        default_factory=list, description="The list of fields in the form."
+        default_factory=list,
+        description="The list of fields in the form.",
+        min_length=1,
     )
 
 

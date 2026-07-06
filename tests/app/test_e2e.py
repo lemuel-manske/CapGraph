@@ -5,7 +5,9 @@ from src.app.app import run
 
 def test_add_contact_form():
     result = run(
-        "root", "build a contact form with name and email fields", {"id": "root", "children": []}
+        anchor="root",
+        prompt="build a contact form with name and email fields",
+        tree={"id": "root", "children": []}
     )
 
     assert result == {

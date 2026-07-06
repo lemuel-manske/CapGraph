@@ -9,9 +9,16 @@ from src.sample.utils import next_id
 
 
 class FieldComponent(BaseModel):
-    label: str = Field(description="The label of the field.")
+    label: str = Field(
+        description="The label of the field.",
+        max_length=90,
+        min_length=1,
+        pattern=r"^[a-zA-Z0-9\s]+$",
+    )
 
-    type: Literal["text", "numeric", "checkbox"] = Field(description="The data type of the field")
+    type: Literal["text", "numeric", "checkbox"] = Field(
+        description="The data type of the field",
+    )
 
     required: bool = Field(
         default=False,
@@ -21,7 +28,9 @@ class FieldComponent(BaseModel):
     description: str | None = Field(
         default=None,
         description="A brief description of the field.",
+        max_length=200,
     )
+
 
 
 def serialize(src: FieldComponent) -> dict:
